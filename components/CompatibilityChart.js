@@ -1,81 +1,77 @@
-'use client';
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { HelpCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart3 } from 'lucide-react';
 
-const chartData = [
-  { skill: "Frontend", score: 90 },
-  { skill: "UX Design", score: 85 },
-  { skill: "Backend", score: 70 },
-  { skill: "DevOps", score: 65 },
-  { skill: "Mobile", score: 75 },
-  { skill: "AI/ML", score: 60 },
-];
+export default function CompatibilityChart({ score }) {
+  // Generate compatibility data based on resume score
+  const getCompatibilityData = () => {
+    if (!score) {
+      // Default data when no score available
+      return [
+        { category: 'Technical Skills', percentage: 75 },
+        { category: 'Experience', percentage: 68 },
+        { category: 'Education', percentage: 82 },
+        { category: 'Projects', percentage: 71 },
+        { category: 'Communication', percentage: 79 },
+      ];
+    }
 
-export default function CompatibilityChart() {
+    // Generate data based on actual score with some variation
+    const baseScore = score;
+    return [
+      { category: 'Technical Skills', percentage: Math.min(100, baseScore + (Math.random() * 20 - 10)) },
+      { category: 'Experience', percentage: Math.min(100, baseScore + (Math.random() * 20 - 10)) },
+      { category: 'Education', percentage: Math.min(100, baseScore + (Math.random() * 20 - 10)) },
+      { category: 'Projects', percentage: Math.min(100, baseScore + (Math.random() * 20 - 10)) },
+      { category: 'Communication', percentage: Math.min(100, baseScore + (Math.random() * 20 - 10)) },
+    ];
+  };
+
+  const data = getCompatibilityData();
+
+  const getBarColor = (percentage) => {
+    if (percentage >= 80) return 'bg-green-400';
+    if (percentage >= 60) return 'bg-yellow-400';
+    return 'bg-red-400';
+  };
+
   return (
-    <Card className="bg-[#121212] border border-[#2a2a2a] text-white shadow-md rounded-xl h-full">
+    <Card className="bg-[#121212] border border-[#2a2a2a] text-white shadow-md rounded-xl min-w-[400px]">
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-medium">Skill Compatibility</CardTitle>
-          <HelpCircle className="h-4 w-4 text-gray-400" />
-        </div>
-        <p className="text-sm text-gray-400">Your technical expertise distribution</p>
+        <CardTitle className="flex items-center gap-2">
+          <BarChart3 className="h-5 w-5 text-[#D86072]" />
+          Skills Compatibility
+        </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="w-full h-[280px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart 
-              outerRadius="75%" 
-              data={chartData}
-              margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
-            >
-              <PolarGrid 
-                gridType="polygon"
-                stroke="#2a2a2a" 
-                strokeWidth={1}
-              />
-              <PolarAngleAxis 
-                dataKey="skill" 
-                tick={{ fill: '#aaa', fontSize: 12 }}
-                tickLine={false}
-                stroke="#2a2a2a"
-              />
-              <Radar
-                name="Skills"
-                dataKey="score"
-                stroke="#D86072"
-                fill="#D86072"
-                fillOpacity={0.6}
-                dot={true}
-                activeDot={{ r: 5, fill: "#fff", stroke: "#D86072" }}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="mt-2 flex flex-wrap gap-2 justify-center">
-          {chartData.map((item, index) => (
-            <div 
-              key={index} 
-              className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
-              style={{ 
-                backgroundColor: `rgba(216, 96, 114, ${item.score / 100 * 0.3})`,
-                color: item.score > 75 ? '#fff' : '#ccc' 
-              }}
-            >
-              <span 
-                className="h-2 w-2 rounded-full" 
-                style={{ backgroundColor: `rgba(216, 96, 114, ${item.score / 100})` }}
-              ></span>
-              {item.skill}
+      <CardContent>
+        <div className="space-y-4">
+          {data.map((item, index) => (
+            <div key={index} className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-300">{item.category}</span>
+                <span className="text-sm font-medium text-white">
+                  {Math.round(item.percentage)}%
+                </span>
+              </div>
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all duration-500 ${getBarColor(item.percentage)}`}
+                  style={{ width: `${item.percentage}%` }}
+                ></div>
+              </div>
             </div>
           ))}
         </div>
+        
+        {score && (
+          <div className="mt-4 pt-4 border-t border-[#2a2a2a]">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-400">Based on Resume Score</span>
+              <span className="text-sm font-medium text-[#D86072]">
+                {score.toFixed(1)}%
+              </span>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

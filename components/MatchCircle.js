@@ -1,109 +1,87 @@
-'use client';
-import { useEffect, useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ChevronRight, Users } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Target, TrendingUp, TrendingDown } from 'lucide-react';
 
-export function MatchCircleCard() {
+export function MatchCircleCard({ score }) {
+  const matchPercentage = score ? Math.round(score) : 78;
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDasharray = circumference;
+  const strokeDashoffset = circumference - (matchPercentage / 100) * circumference;
+
+  const getMatchLevel = (percentage) => {
+    if (percentage >= 80) return { level: 'Excellent', color: 'text-green-400', icon: TrendingUp };
+    if (percentage >= 60) return { level: 'Good', color: 'text-yellow-400', icon: TrendingUp };
+    return { level: 'Needs Improvement', color: 'text-red-400', icon: TrendingDown };
+  };
+
+  const matchInfo = getMatchLevel(matchPercentage);
+  const IconComponent = matchInfo.icon;
+
+  const getCircleColor = (percentage) => {
+    if (percentage >= 80) return 'stroke-green-400';
+    if (percentage >= 60) return 'stroke-yellow-400';
+    return 'stroke-red-400';
+  };
+
   return (
-    <Card className="bg-[#121212] border border-[#2a2a2a] text-white shadow-md rounded-xl">
+    <Card className="bg-[#121212] border border-[#2a2a2a] text-white shadow-md rounded-xl min-w-[300px]">
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-medium">Job Match</CardTitle>
-          <div className="text-xs bg-[#D8607220] text-[#D86072] px-2 py-1 rounded-full">
-            New jobs
-          </div>
-        </div>
+        <CardTitle className="flex items-center gap-2">
+          <Target className="h-5 w-5 text-[#D86072]" />
+          Job Match Score
+        </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="flex justify-center my-2">
-          <MatchCircle percentage={87} />
-        </div>
-        <div className="space-y-3 mt-4">
-          <div className="flex items-center justify-between bg-[#1a1a1a] p-3 rounded-lg border border-[#2a2a2a] hover:border-[#3a3a3a] cursor-pointer transition-all">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-500/10 p-2 rounded-md">
-                <Users className="h-4 w-4 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">Senior UI Developer</p>
-                <p className="text-xs text-gray-400">Fintech platform • Remote</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="bg-blue-500/10 text-blue-400 text-xs font-medium rounded-full px-2 py-1">
-                94%
-              </div>
-              <ChevronRight className="h-4 w-4 text-gray-400" />
+      <CardContent>
+        <div className="flex flex-col items-center space-y-4">
+          {/* Circular Progress */}
+          <div className="relative w-32 h-32">
+            <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 100 100">
+              {/* Background circle */}
+              <circle
+                cx="50"
+                cy="50"
+                r={radius}
+                stroke="currentColor"
+                strokeWidth="8"
+                fill="transparent"
+                className="text-gray-700"
+              />
+              {/* Progress circle */}
+              <circle
+                cx="50"
+                cy="50"
+                r={radius}
+                stroke="currentColor"
+                strokeWidth="8"
+                fill="transparent"
+                strokeDasharray={strokeDasharray}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+                className={`${getCircleColor(matchPercentage)} transition-all duration-1000 ease-in-out`}
+              />
+            </svg>
+            {/* Percentage text */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-2xl font-bold text-white">{matchPercentage}%</span>
             </div>
           </div>
-          
-          <div className="flex items-center justify-between bg-[#1a1a1a] p-3 rounded-lg border border-[#2a2a2a] hover:border-[#3a3a3a] cursor-pointer transition-all">
-            <div className="flex items-center gap-3">
-              <div className="bg-green-500/10 p-2 rounded-md">
-                <Users className="h-4 w-4 text-green-400" />
-              </div>
-              <div>
-                <p className="text-sm font-medium">UX Engineer</p>
-                <p className="text-xs text-gray-400">Healthcare • Hybrid</p>
-              </div>
+
+          {/* Match level info */}
+          <div className="text-center space-y-2">
+            <div className={`flex items-center justify-center gap-1 ${matchInfo.color}`}>
+              <IconComponent className="h-4 w-4" />
+              <span className="font-medium">{matchInfo.level}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="bg-green-500/10 text-green-400 text-xs font-medium rounded-full px-2 py-1">
-                89%
-              </div>
-              <ChevronRight className="h-4 w-4 text-gray-400" />
-            </div>
+            
+            <p className="text-sm text-gray-400 max-w-48 text-center">
+              {score 
+                ? 'Match score based on your resume analysis'
+                : 'Estimated match for software development positions'
+              }
+            </p>
           </div>
         </div>
       </CardContent>
     </Card>
   );
 }
-
-function MatchCircle({ percentage }) {
-  const radius = 50;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-  
-  return (
-    <div className="relative flex items-center justify-center">
-      <svg width="120" height="120" viewBox="0 0 120 120">
-        {/* Background circle */}
-        <circle
-          cx="60"
-          cy="60"
-          r={radius}
-          fill="transparent"
-          stroke="#2a2a2a"
-          strokeWidth="8"
-        />
-        
-        {/* Progress circle */}
-        <circle
-          cx="60"
-          cy="60"
-          r={radius}
-          fill="transparent"
-          stroke="#D86072"
-          strokeWidth="8"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          transform="rotate(-90 60 60)"
-        />
-      </svg>
-      
-      <div className="absolute flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold">{percentage}%</span>
-        <span className="text-xs text-gray-400">Match Rate</span>
-      </div>
-    </div>
-  );
-}
-
-export default MatchCircle;

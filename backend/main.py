@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from bson.binary import Binary
 from pydantic import BaseModel
 from passlib.context import CryptContext
@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 import os
 import requests
 import asyncio
+import httpx
 from concurrent.futures import ThreadPoolExecutor
 
 # === Config ===
@@ -22,6 +23,7 @@ if not SECRET_KEY:
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 MONGO_URI = "mongodb://localhost:27017"
+ML_SERVICE_URL = "http://localhost:8001"
 
 # === Setup ===
 app = FastAPI()
@@ -44,11 +46,11 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class UserIn(BaseModel):
     username: str
     password: str
-    has_submitted: bool;
+    has_submitted: bool
 
 class UserOut(BaseModel):
     username: str
-    has_submitted: bool;
+    has_submitted: bool
 
 class Token(BaseModel):
     access_token: str
@@ -129,7 +131,6 @@ async def submit_response(data: ResponseIn, current_user: dict = Depends(get_cur
         raise HTTPException(status_code=400, detail="Update failed")
     return {"message": "Response submitted"}
 
-
 @app.post("/upload-resume")
 async def upload_resume(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
     if file.content_type != "application/pdf":
@@ -148,19 +149,25 @@ async def upload_resume(file: UploadFile = File(...), current_user: dict = Depen
 
     return {"message": "Resume uploaded successfully"}
 
-
-#---------------------------------------------------------
 # PDF endpoint for ML service to fetch PDFs
 @app.get("/pdf/{username}")
 async def get_pdf(username: str):
     """Endpoint for ML service to fetch PDF by username"""
+    print(f"PDF request for username: {username}")  # Debug log
     user = await users.find_one({"username": username})
-    if not user or "resume_pdf" not in user:
+    if not user:
+        print(f"User not found: {username}")
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if "resume_pdf" not in user:
+        print(f"No PDF found for user: {username}")
         raise HTTPException(status_code=404, detail="PDF not found")
     
     pdf_binary = user["resume_pdf"]
+    print(f"PDF found for user: {username}, size: {len(pdf_binary)} bytes")
     return Response(content=pdf_binary, media_type="application/pdf")
 
+@app.get("/process-resume", response_model=ResumeAnalysis)
 @app.get("/process-resume", response_model=ResumeAnalysis)
 async def process_resume(current_user: dict = Depends(get_current_user)):
     """Process the user's resume with ML service"""
@@ -179,17 +186,23 @@ async def process_resume(current_user: dict = Depends(get_current_user)):
         )
     
     try:
-        # Call ML service
-        response = requests.post(
-            f"{ML_SERVICE_URL}/analyze-resume",
-            json={"username": current_user["username"]},
-            timeout=120  # 2 minutes timeout for ML processing
-        )
+        print(f"Processing resume for user: {current_user['username']}")
+        
+        # Use async HTTP client
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(
+                f"{ML_SERVICE_URL}/analyze-resume",
+                json={"username": current_user["username"], "response": current_user["response"]}
+            )
+        
+        print(f"ML service response status: {response.status_code}")
         
         if response.status_code != 200:
+            print(f"ML service error: {response.text}")
             raise HTTPException(status_code=500, detail="ML service failed to process resume")
         
         result = response.json()
+        print(f"ML service result: {result}")
         
         # Save analysis results to database
         await users.update_one(
@@ -203,7 +216,7 @@ async def process_resume(current_user: dict = Depends(get_current_user)):
             sections=result["sections"]
         )
         
-    except requests.exceptions.RequestException as e:
+    except httpx.RequestError as e:
         print(f"Error calling ML service: {e}")
         raise HTTPException(status_code=503, detail="ML service unavailable")
     except Exception as e:
