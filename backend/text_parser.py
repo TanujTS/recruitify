@@ -7,9 +7,11 @@ import torch
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import tempfile
+from dotenv import load_dotenv
 import os
 
 # === Config ===
+load_dotenv()
 app = FastAPI()
 BACKEND_URL = "http://localhost:8000"
 userResponse = "professional resume"
@@ -94,32 +96,30 @@ def extract_resume_sections(username):
         return None
 
 def find_summary(text):
-    """Generate summary using T5 model"""
+
+    API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+    headers = {"Authorization": f"Bearer {os.getenv('ML_TOKEN')}"}
+
+    payload = {
+        "inputs": text,
+        "parameters": {
+            "min_length": 30,
+            "max_length": 150
+        }
+    }
+    response = requests.post(API_URL, headers=headers, json=payload)
+
     try:
-        print(f"Generating summary for text of length: {len(text)}")
-        
-        tokenizer = AutoTokenizer.from_pretrained("t5-small")
-        model = AutoModelForSeq2SeqLM.from_pretrained("t5-small")
-        
-        input_text = "summarize: " + text
-        inputs = tokenizer(input_text, return_tensors="pt", max_length=512, truncation=True)
-
-        summary_ids = model.generate(
-            inputs["input_ids"],
-            max_length=150,       # controls summary length
-            min_length=30,        # optional: minimum length for output
-            length_penalty=2.0,   # higher = shorter summary
-            num_beams=4,          # beam search for better quality
-            early_stopping=True   # stop when model is confident
-        )
-
-        summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
-        print(f"Generated summary: {summary[:100]}...")
-        return str(summary)
-    
+        result = response.json()
+        if isinstance(result, list) and "summary_text" in result[0]:
+            return result[0]["summary_text"]
+        else:
+            print("⚠️ Unexpected response format:")
+            print(result)
+            return "Oops! No summary generated."
     except Exception as e:
-        print(f"Error generating summary: {e}")
-        return text[:200] + "..." if len(text) > 200 else text
+        print("❌ Error parsing response:", e)
+        return "Something went wrong."
 
 def calculate_similarity(summarised_data, query=userResponse):
     """Calculate similarity score"""

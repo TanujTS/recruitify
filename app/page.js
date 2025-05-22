@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import Image from "next/image";
 import { useRouter } from 'next/navigation'
+import ProcessStepsCarousel from "@/components/ProcessStepsCarousel";
+
 
 export default function Home() {
+  const OPTIONS = { loop: true, slidesToScroll: 1 }
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -16,7 +19,7 @@ export default function Home() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      setLoading(false);  // ✅ Important
+      setLoading(false);  
       return;
     }
 
@@ -25,31 +28,38 @@ export default function Home() {
         Authorization: `Bearer ${token}`,
       },
     })
-    .then(async (res) => { 
-      if (!res.ok) {
-        setLoading(false);  // ✅ Important
-        return;
-      }
-      const data = await res.json();
-      setUser(data);
-      setLoading(false);
-    })
-    .catch(() => {
-      setLoading(false);  // ✅ Also handle error case
-    });
+      .then(async (res) => {
+        if (!res.ok) {
+          setLoading(false);  
+          return;
+        }
+        const data = await res.json();
+        setUser(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);  
+      });
   }, [router]);
 
   if (loading) {
-    return <p className="text-white p-8 text-center">Loading...</p>;
+    return (
+      <div className="text-white bg-[#262628] min-h-[92vh] p-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D86072] mx-auto"></div>
+          <p className="mt-4 text-gray-300">Loading dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-[url(/landing-bg.png)] bg-cover bg-no-repeat min-h-[92vh] w-full flex text-white">
-      <div className="flex mx-auto my-10">
-        <div className="max-h-[60vh] max-w-[40vw] m-2">
+    <div className="bg-[url(/landing-bg.png)] bg-cover bg-no-repeat min-h-screen w-full flex-col text-white">
+      <div className="flex mb-10 mx-auto p-12 w-full">
+        <div className="max-w-[50vw] m-2 flex flex-col">
           <h1 className="heading text-7xl">Not Just Any Fit, Find The Right Fit</h1>
           <p className="mt-10 text-2xl w-[70%]">
-            We’re here to help you find the right person for your job, whatever it may be.
+            We're here to help you find the right person for your job, whatever it may be.
           </p>
           <div className="buttons mt-6 flex gap-4">
             {!user ? (
@@ -61,12 +71,24 @@ export default function Home() {
               <Button size="lg icon" onClick={handleDashboardBtn}>Dashboard</Button>
             )}
           </div>
+          
+          {/* Process Steps Section */}
+          <div className="mt-16">
+            <div className="mb-8">
+              <h2 className="text-4xl font-bold mb-4">How It Works</h2>
+              <p className="text-xl text-gray-300">
+                Simple steps to find your perfect job match
+              </p>
+            </div>
+            <ProcessStepsCarousel options={OPTIONS} />
+          </div>
         </div>
-        <div>
+        
+        <div className="flex-1 flex justify-end items-start">
           <Image
             src="/landing-img.png"
-            width={600}
-            height={600}
+            width={800}
+            height={800}
             alt="Landing image"
           />
         </div>
