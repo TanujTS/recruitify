@@ -25,16 +25,21 @@
 }
 
 .buttons Button{
-    padding: 12px;
+    padding: 16px;
     background-color: white;
     color: black;
     margin-top: 12px;
     margin-left: 10px;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: bold;
 }
 
 .buttons Button:hover {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.695);
+}
+
+
+.heading {
+    font-family: 'Times New Roman', Times, serif;
 }

@@ -38,6 +38,7 @@ export default function Dashboard() {
         } else {
           const data = await res.json();
           setUser(data);
+          if (!data.has_submitted) {router.push('/dashboard/recruit')}
           setLoading(false);
         }
       })

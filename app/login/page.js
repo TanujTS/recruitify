@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { LoginForm } from "@/components/login-form";
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -34,7 +35,7 @@ export default function LoginPage() {
 
       const data = await res.json();
       localStorage.setItem('token', data.access_token);
-      router.push('/dashboard'); // redirect to a protected page
+      router.push('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
       setError('Something went wrong');
@@ -42,44 +43,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '80px auto' }}>
-      <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Login</h1>
-      <form onSubmit={handleLogin}>
-        <div style={{ marginBottom: '12px' }}>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={{ width: '100%', padding: '8px' }}
-            required
-          />
-        </div>
-        <div style={{ marginBottom: '12px' }}>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: '100%', padding: '8px' }}
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '10px',
-            backgroundColor: '#0070f3',
-            color: '#fff',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          Log In
-        </button>
-        {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
-      </form>
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <LoginForm
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          loginFun={handleLogin}
+          error={error}
+        />
+      </div>
     </div>
   );
 }
