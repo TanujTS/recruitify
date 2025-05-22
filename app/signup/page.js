@@ -1,14 +1,17 @@
-"use client"
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+'use client';
 
-export default function Signup() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { SignupForm } from '@/components/signup-form';
+
+export default function LoginPage() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const router = useRouter();
 
-  const handleSignup = async () => {
+  const handleSignup = async (e) => {
+    e.preventDefault();
     const res = await fetch("http://localhost:8000/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -18,26 +21,25 @@ export default function Signup() {
     const data = await res.json();
     if (res.ok) {
       setMessage("Signup successful! Redirecting to login...");
-      setTimeout(() => router.push("/"), 1500);
+      setTimeout(() => router.push("/login"), 1500);
+      console.log("signed up")
     } else {
       setMessage(data.detail || "Signup failed.");
     }
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Signup</h1>
-      <input required
-        placeholder="Username"
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input required
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleSignup}>Signup</button>
-      <p>{message}</p>
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10 bg-[#09090b]">
+      <div className="w-full max-w-sm">
+        <SignupForm 
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          registerFun={handleSignup}
+          error={message}
+        />
+      </div>
     </div>
   );
 }
