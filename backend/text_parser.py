@@ -97,29 +97,39 @@ def extract_resume_sections(username):
 
 def find_summary(text):
 
-    API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-    headers = {"Authorization": f"Bearer {os.getenv('ML_TOKEN')}"}
+    GROQ_API_KEY = os.getenv('ML_TOKEN')
 
-    payload = {
-        "inputs": text,
-        "parameters": {
-            "min_length": 30,
-            "max_length": 150
-        }
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
     }
-    response = requests.post(API_URL, headers=headers, json=payload)
 
-    try:
-        result = response.json()
-        if isinstance(result, list) and "summary_text" in result[0]:
-            return result[0]["summary_text"]
-        else:
-            print("⚠️ Unexpected response format:")
-            print(result)
-            return "Oops! No summary generated."
-    except Exception as e:
-        print("❌ Error parsing response:", e)
-        return "Something went wrong."
+    url = "https://api.groq.com/openai/v1/chat/completions"
+
+    data = {
+        "model": "llama3-8b-8192",  
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant that summarizes text into coherent, understandable sentences."
+            },
+            {
+                "role": "user",
+                "content": "Summarize the following text:\n\n"+text
+            }
+        ],
+        "temperature": 0.7, #creativity.
+        "max_tokens": 300
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+
+    if response.status_code == 200:
+        summary = response.json()["choices"][0]["message"]["content"]
+        #print("📄 Summary:\n", summary)
+        return(str(summary))
+    else:
+        print("🚨 Error:", response.status_code, response.text)
 
 def calculate_similarity(summarised_data, query=userResponse):
     """Calculate similarity score"""

@@ -18,28 +18,24 @@ const ProcessStepsCarousel = (props) => {
       icon: "📝",
       title: "Post Role + Requirements",
       description: "Define your job requirements and post your role to attract the right candidates.",
-      buttonText: "Post Job"
     },
     {
       id: 2,
       icon: "📄",
       title: "Upload Resume",
       description: "Candidates upload their resumes and professional profiles for review.",
-      buttonText: "Upload Resume"
     },
     {
       id: 3,
       icon: "🔗",
       title: "Get Smart Rating And Analysis",
       description: "Our AI analyzes candidate fit and provides smart ratings for better matching.",
-      buttonText: "Get Analysis"
     },
     {
       id: 4,
       icon: "👥",
       title: "Interview the Best Fit",
       description: "Connect with top-rated candidates and conduct interviews with the best matches.",
-      buttonText: "Schedule Interview"
     }
   ]
 
@@ -76,12 +72,6 @@ const ProcessStepsCarousel = (props) => {
                 </div>
                 <h3 className="step-title">{step.title}</h3>
                 <p className="step-description">{step.description}</p>
-                <Button 
-                  className="step-button bg-[#D86072] hover:bg-[#c55566] text-white"
-                  size="sm"
-                >
-                  {step.buttonText}
-                </Button>
               </div>
             </div>
           ))}

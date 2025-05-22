@@ -22,12 +22,12 @@ export function LoginForm({
   error,
 }) {
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
-      <Card>
+    <div className={cn("flex flex-col gap-6 bg-[#09090b] p-0 rounded-2xl", className)}>
+      <Card className="bg-[#09090b] text-white border-[#ffffff2d]">
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your credentials below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -36,6 +36,7 @@ export function LoginForm({
               <div className="grid gap-3">
                 <Label htmlFor="username">Username</Label>
                 <Input
+                className="border-[#ffffff2d]"
                   id="username"
                   type="username"
                   placeholder="johndoe"
@@ -47,14 +48,9 @@ export function LoginForm({
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
                 </div>
                 <Input
+                className="border-[#ffffff2d]"
                   id="password"
                   type="password"
                   value={password}
@@ -68,7 +64,7 @@ export function LoginForm({
               )}
 
               <div className="flex flex-col gap-3">
-                <Button variant="outline" type="submit" className="w-full">
+                <Button variant="outline" type="submit" className="w-full border-[#ffffff2d] hover:cursor-pointer hover:border-white">
                   Login
                 </Button>
                 {/* <Button variant="outline" className="w-full">

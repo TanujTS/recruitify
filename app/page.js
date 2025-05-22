@@ -57,7 +57,7 @@ export default function Home() {
     <div className="bg-[url(/landing-bg.png)] bg-cover bg-no-repeat min-h-screen w-full flex-col text-white">
       <div className="flex mb-10 mx-auto p-12 w-full">
         <div className="max-w-[50vw] m-2 flex flex-col">
-          <h1 className="heading text-7xl">Not Just Any Fit, Find The Right Fit</h1>
+          <h1 className="heading w-[70%] text-7xl">Not Just Any Fit, Find The Right Fit</h1>
           <p className="mt-10 text-2xl w-[70%]">
             We're here to help you find the right person for your job, whatever it may be.
           </p>
@@ -76,9 +76,6 @@ export default function Home() {
           <div className="mt-16">
             <div className="mb-8">
               <h2 className="text-4xl font-bold mb-4">How It Works</h2>
-              <p className="text-xl text-gray-300">
-                Simple steps to find your perfect job match
-              </p>
             </div>
             <ProcessStepsCarousel options={OPTIONS} />
           </div>

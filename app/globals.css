@@ -46,11 +46,11 @@
 
 /* Process Steps Carousel Styles */
 .process-carousel {
-  max-width: 40rem;
-  margin: auto;
+  max-width: 45rem;
+  margin: 2px;
   --slide-height: 16rem;
   --slide-spacing: 1.5rem;
-  --slide-size: 85%;
+  --slide-size: 75%;
 }
 
 .process-carousel__viewport {
@@ -126,7 +126,7 @@
 
 /* Thumbnail Navigation Styles */
 .process-thumbs {
-  --thumbs-slide-spacing: 0.5rem;
+  --thumbs-slide-spacing: 0.1rem;
   --thumbs-slide-height: 4rem;
   margin-top: 2rem;
 }
