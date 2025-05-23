@@ -56,7 +56,7 @@ export default function Home() {
   return (
     <div className="bg-[url(/landing-bg.png)] bg-cover bg-no-repeat min-h-[92vh] w-full flex-col text-white">
       <div className="flex mx-auto pt-12 pl-12 w-full">
-        <div className="max-w-[50vw] m-2 flex flex-col">
+        <div className="min-w-[50vw] m-2 flex flex-col">
           <h1 className="heading w-[70%] text-7xl">Not Just Any Fit, Find The Right Fit</h1>
           <p className="mt-8 text-2xl w-[70%]">
             We're here to help you find the right person for your job, whatever it may be.
@@ -81,7 +81,7 @@ export default function Home() {
           </div>
         </div>
         
-        <div className="flex-1 flex justify-end items-start">
+        <div className="hidden justify-end items-start lg:flex">
           <Image
             src="/landing-img.png"
             width={800}

@@ -21,6 +21,7 @@ import {
   User, 
   AlertCircle
 } from 'lucide-react';
+import VerticalMeter from '@/components/VerticalMeter';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -136,10 +137,10 @@ export default function Dashboard() {
           </h1>
           <p className="text-gray-400">Here's your resume analysis overview</p>
         </div>
-        <div className="flex items-center gap-3 px-4 py-2 bg-[#1e1e1e] rounded-xl border border-[#2a2a2a]">
+        <div className="hidden lg:flex items-center gap-3 px-4 py-2 bg-[#1e1e1e] rounded-xl border border-[#2a2a2a]">
           <User className="h-4 w-4 text-gray-400" />
           <span className="text-sm text-gray-300">Resume Status:</span>
-          <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full border border-green-500/20 text-sm">
+          <span className=" px-3 py-1 bg-green-500/10 text-green-400 rounded-full border border-green-500/20 text-sm">
             ✓ Submitted
           </span>
         </div>
@@ -158,9 +159,9 @@ export default function Dashboard() {
       )}
 
       {/* Main Dashboard Grid */}
-      <div className="">
+      <div className="flex gap-10">
         {/* Score Card */}
-        {/* <div className="xl:col-span-1">
+        {/* <div className="max-w-[20vw]">
           {processingResume ? (
             <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#121212] border border-[#2a2a2a] text-white shadow-xl rounded-2xl">
               <CardHeader className="pb-2">
@@ -182,9 +183,10 @@ export default function Dashboard() {
         </div> */}
 
         {/* Section Analysis Card */}
-        <div className="max-w-[60vw] m-auto">
+        <div className="max-w-[80vw] lg:w-[60vw]">
           <SummaryCard resumeData={resumeAnalysis} />
         </div>
+        
 
         {/* Resume Summary Card */}
         {/* {resumeAnalysis && (
