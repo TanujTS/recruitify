@@ -47,18 +47,18 @@ export default function Home() {
       <div className="text-white bg-[#262628] min-h-[92vh] p-4 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D86072] mx-auto"></div>
-          <p className="mt-4 text-gray-300">Loading dashboard...</p>
+          <p className="mt-4 text-gray-300">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[url(/landing-bg.png)] bg-cover bg-no-repeat min-h-screen w-full flex-col text-white">
-      <div className="flex mb-10 mx-auto p-12 w-full">
+    <div className="bg-[url(/landing-bg.png)] bg-cover bg-no-repeat min-h-[92vh] w-full flex-col text-white">
+      <div className="flex mx-auto pt-12 pl-12 w-full">
         <div className="max-w-[50vw] m-2 flex flex-col">
           <h1 className="heading w-[70%] text-7xl">Not Just Any Fit, Find The Right Fit</h1>
-          <p className="mt-10 text-2xl w-[70%]">
+          <p className="mt-8 text-2xl w-[70%]">
             We're here to help you find the right person for your job, whatever it may be.
           </p>
           <div className="buttons mt-6 flex gap-4">
@@ -73,9 +73,9 @@ export default function Home() {
           </div>
           
           {/* Process Steps Section */}
-          <div className="mt-16">
-            <div className="mb-8">
-              <h2 className="text-4xl font-bold mb-4">How It Works</h2>
+          <div className="mt-8">
+            <div className="mb-4">
+              <h2 className="text-4xl font-bold">How It Works</h2>
             </div>
             <ProcessStepsCarousel options={OPTIONS} />
           </div>

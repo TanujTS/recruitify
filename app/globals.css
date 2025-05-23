@@ -48,7 +48,7 @@
 .process-carousel {
   max-width: 45rem;
   margin: 2px;
-  --slide-height: 16rem;
+  --slide-height: 14rem;
   --slide-spacing: 1.5rem;
   --slide-size: 75%;
 }

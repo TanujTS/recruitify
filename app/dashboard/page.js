@@ -11,7 +11,16 @@ import { Button } from '@/components/ui/button';
 import CompatibilityChart from '@/components/CompatibilityChart';
 import SummaryCard from '@/components/SummaryCard';
 import { MatchCircleCard } from '@/components/MatchCircle';
-import { Activity, Briefcase, Code, Star, FileText, TrendingUp, User, AlertCircle } from 'lucide-react';
+import { 
+  Activity, 
+  Briefcase, 
+  Code, 
+  Star, 
+  FileText, 
+  TrendingUp, 
+  User, 
+  AlertCircle
+} from 'lucide-react';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -108,9 +117,9 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="text-white bg-[#262628] min-h-[92vh] p-4 flex items-center justify-center">
+      <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] min-h-screen p-6 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D86072] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#D86072] border-t-transparent mx-auto"></div>
           <p className="mt-4 text-gray-300">Loading dashboard...</p>
         </div>
       </div>
@@ -118,89 +127,106 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="text-white bg-[#262628] min-h-[92vh] p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl p-3">Welcome, {user?.username}</h1>
-        <div className="flex items-center gap-2 text-sm text-gray-300">
-          <User className="h-4 w-4" />
-          Resume Status: 
-          <span className="bg-green-900/20 text-green-400 px-2 py-1 rounded border border-green-700">
-            Submitted
+    <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] min-h-screen p-6">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Welcome back, <span className="text-[#D86072]">{user?.username}</span>
+          </h1>
+          <p className="text-gray-400">Here's your resume analysis overview</p>
+        </div>
+        <div className="flex items-center gap-3 px-4 py-2 bg-[#1e1e1e] rounded-xl border border-[#2a2a2a]">
+          <User className="h-4 w-4 text-gray-400" />
+          <span className="text-sm text-gray-300">Resume Status:</span>
+          <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full border border-green-500/20 text-sm">
+            ✓ Submitted
           </span>
         </div>
       </div>
 
+      {/* Error Alert */}
       {error && (
-        <Card className="bg-red-900/20 border border-red-700 text-white shadow-md rounded-xl mb-6">
+        <Card className="bg-red-500/10 border border-red-500/20 text-white shadow-lg rounded-xl mb-6">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 text-red-400">
+            <div className="flex items-center gap-3 text-red-400">
               <AlertCircle className="h-5 w-5" />
-              {error}
+              <span>{error}</span>
             </div>
           </CardContent>
         </Card>
       )}
 
-      <div className="flex flex-wrap gap-6 justify-evenly">
-        {/* Resume Analysis Score Card */}
-        {processingResume ? (
-          <Card className="bg-[#121212] border border-[#2a2a2a] text-white shadow-md rounded-xl min-w-[300px]">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-[#D86072]" />
-                Resume Analysis
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#D86072] mx-auto"></div>
-                <p className="mt-2 text-sm text-gray-400">Analyzing your resume...</p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : resumeAnalysis ? (
-          <MatchCircleCard score={resumeAnalysis?.score} />
-        ) : null}
+      {/* Main Dashboard Grid */}
+      <div className="">
+        {/* Score Card */}
+        {/* <div className="xl:col-span-1">
+          {processingResume ? (
+            <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#121212] border border-[#2a2a2a] text-white shadow-xl rounded-2xl">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-[#D86072]" />
+                  Resume Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#D86072] border-t-transparent mx-auto"></div>
+                  <p className="mt-4 text-sm text-gray-400">Analyzing your resume...</p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : resumeAnalysis ? (
+            <MatchCircleCard score={resumeAnalysis?.score} />
+          ) : null}
+        </div> */}
 
-        {/* Existing components */}
-        <SummaryCard resumeData={resumeAnalysis} />
-        {/* <CompatibilityChart score={resumeAnalysis?.score} /> */}
-        
+        {/* Section Analysis Card */}
+        <div className="max-w-[60vw] m-auto">
+          <SummaryCard resumeData={resumeAnalysis} />
+        </div>
 
         {/* Resume Summary Card */}
-        {resumeAnalysis && (
-          <Card className="bg-[#121212] border border-[#2a2a2a] text-white shadow-md rounded-xl w-[60vw]">
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-[#D86072]" />
-                Resume Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-200 leading-relaxed">
-                {resumeAnalysis.summary || 'No summary available'}
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        {/* {resumeAnalysis && (
+          <div className="xl:col-span-3">
+            <Card className="bg-gradient-to-br from-[#1a1a1a] to-[#121212] border border-[#2a2a2a] text-white shadow-xl rounded-2xl">
+              <CardHeader className="pb-4 bg-gradient-to-r from-[#D86072]/10 to-transparent">
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-[#D86072]/20 border border-[#D86072]/30">
+                    <FileText className="h-5 w-5 text-[#D86072]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold">AI Resume Summary</h3>
+                    <p className="text-sm text-gray-400">Comprehensive analysis of your resume</p>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-[#0f0f0f] rounded-xl p-6 border border-[#2a2a2a]">
+                  <p className="text-gray-200 leading-relaxed">
+                    {resumeAnalysis.summary || 'No summary available'}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )} */}
 
-        {/* Retry Analysis Button */}
+        {/* Retry Button */}
         {error && (
-          <Card className="bg-[#121212] border border-[#2a2a2a] text-white shadow-md rounded-xl">
-            <CardContent className="p-6 text-center">
-              <Button 
-                onClick={() => {
-                  setError('');
-                  const token = localStorage.getItem('token');
-                  if (token) fetchResumeAnalysis(token);
-                }}
-                className="bg-[#D86072] hover:bg-[#c55365] text-white"
-                disabled={processingResume}
-              >
-                {processingResume ? 'Processing...' : 'Retry Analysis'}
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="xl:col-span-3 flex justify-center">
+            <Button 
+              onClick={() => {
+                setError('');
+                const token = localStorage.getItem('token');
+                if (token) fetchResumeAnalysis(token);
+              }}
+              className="bg-gradient-to-r from-[#D86072] to-[#ff7a8a] hover:from-[#c55365] hover:to-[#e66b7d] text-white px-8 py-3 rounded-xl transition-all duration-200 shadow-lg"
+              disabled={processingResume}
+            >
+              {processingResume ? 'Processing...' : 'Retry Analysis'}
+            </Button>
+          </div>
         )}
       </div>
     </div>

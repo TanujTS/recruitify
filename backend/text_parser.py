@@ -23,7 +23,6 @@ class AnalyzeRequest(BaseModel):
 
 class AnalyzeResponse(BaseModel):
     score: float
-    summary: str
     sections: dict
 
 # === ML Functions ===
@@ -115,11 +114,11 @@ def find_summary(text):
             },
             {
                 "role": "user",
-                "content": "Summarize the following text:\n\n"+text
+                "content": "Rules to follow while summarising: when the text is about education just take the course content and when it is based on experience extract the skills and duration from the data and give it as generalised terms like decade/several couple of years. Respond only with the summary, don't literally write the word 'summary' in it anywhere.:"+text
             }
         ],
-        "temperature": 0.7, #creativity.
-        "max_tokens": 300
+        "temperature": 0.5, #creativity.
+        "max_tokens": 500
     }
 
     response = requests.post(url, headers=headers, json=data)
@@ -180,10 +179,10 @@ def main_block(username):
             print("No valid sections found")
             return {"score": 0.0, "summary": "No valid sections found in resume", "sections": {}}
 
-        score = calculate_similarity(summarised) * 100
+        score = (calculate_similarity(summarised)+1) * 50
         result = {
             "score": round(score, 2),
-            "summary": overall_summary.strip(),
+            "summary": summarised,
             "sections": summarised
         }
 
@@ -208,7 +207,6 @@ async def analyze_resume(request: AnalyzeRequest):
         
         return AnalyzeResponse(
             score=result["score"],
-            summary=result["summary"],
             sections=result["sections"]
         )
     except Exception as e:

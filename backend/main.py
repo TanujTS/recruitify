@@ -61,7 +61,7 @@ class ResponseIn(BaseModel):
 
 class ResumeAnalysis(BaseModel):
     score: float
-    summary: str
+    # summary: dict  # Changed from str to dict
     sections: dict
 
 # === Helpers ===
@@ -168,7 +168,6 @@ async def get_pdf(username: str):
     return Response(content=pdf_binary, media_type="application/pdf")
 
 @app.get("/process-resume", response_model=ResumeAnalysis)
-@app.get("/process-resume", response_model=ResumeAnalysis)
 async def process_resume(current_user: dict = Depends(get_current_user)):
     """Process the user's resume with ML service"""
     
@@ -181,7 +180,7 @@ async def process_resume(current_user: dict = Depends(get_current_user)):
         analysis = current_user["resume_analysis"]
         return ResumeAnalysis(
             score=analysis.get("score", 0.0),
-            summary=analysis.get("summary", ""),
+            # summary=analysis.get("summary", {}),  # Changed default from "" to {}
             sections=analysis.get("sections", {})
         )
     
@@ -212,7 +211,7 @@ async def process_resume(current_user: dict = Depends(get_current_user)):
         
         return ResumeAnalysis(
             score=result["score"],
-            summary=result["summary"],
+            # summary=result["summary"],
             sections=result["sections"]
         )
         
@@ -231,7 +230,7 @@ async def get_resume_analysis(current_user: dict = Depends(get_current_user)):
         analysis = current_user["resume_analysis"]
         return ResumeAnalysis(
             score=analysis.get("score", 0.0),
-            summary=analysis.get("summary", ""),
+            # summary=analysis.get("summary", {}),  # Changed default from "" to {}
             sections=analysis.get("sections", {})
         )
     else:
